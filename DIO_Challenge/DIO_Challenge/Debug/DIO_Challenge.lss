@@ -17,15 +17,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   6 .debug_abbrev 0000098e  00000000  00000000  00001f42  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000a35  00000000  00000000  000028d0  2**0
+  7 .debug_line   00000a37  00000000  00000000  000028d0  2**0
                   CONTENTS, READONLY, DEBUGGING
   8 .debug_frame  00000234  00000000  00000000  00003308  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000624  00000000  00000000  0000353c  2**0
+  9 .debug_str    0000061c  00000000  00000000  0000353c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000d47  00000000  00000000  00003b60  2**0
+ 10 .debug_loc    00000d47  00000000  00000000  00003b58  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000120  00000000  00000000  000048a7  2**0
+ 11 .debug_ranges 00000120  00000000  00000000  0000489f  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -237,11 +237,11 @@ Disassembly of section .text:
  19e:	08 95       	ret
 
 000001a0 <gpioPinRead>:
- * @return
  */
 uint8_t gpioPinRead(uint8_t u8_port, uint8_t u8_pin){
 	
 			uint8_t	u8_value = 0;
+			
 			switch(u8_port){
  1a0:	81 30       	cpi	r24, 0x01	; 1
  1a2:	49 f0       	breq	.+18     	; 0x1b6 <gpioPinRead+0x16>
@@ -287,11 +287,11 @@ uint8_t gpioPinRead(uint8_t u8_port, uint8_t u8_pin){
  1cc:	61 11       	cpse	r22, r1
  1ce:	01 c0       	rjmp	.+2      	; 0x1d2 <gpioPinRead+0x32>
  1d0:	80 e0       	ldi	r24, 0x00	; 0
+			{
 				return 1;
 			} else {
 				return 0;
 			}
-		//return (u8_value >> u8_pin);
 }
  1d2:	08 95       	ret
 
@@ -459,289 +459,290 @@ void Led_Off(En_LedNumber_t en_led_id){
  2b6:	0e 94 9c 00 	call	0x138	; 0x138 <gpioPinWrite>
  2ba:	08 95       	ret
 
-000002bc <Go_State>:
-    }
+000002bc <REQ1_Start>:
+ * 
+ *
+ */
+void REQ1_Start(void)
+{
+	sevenSegInit(SEG_0);
+ 2bc:	80 e0       	ldi	r24, 0x00	; 0
+ 2be:	0e 94 57 02 	call	0x4ae	; 0x4ae <sevenSegInit>
+	sevenSegInit(SEG_1);
+ 2c2:	81 e0       	ldi	r24, 0x01	; 1
+ 2c4:	0e 94 57 02 	call	0x4ae	; 0x4ae <sevenSegInit>
+		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
+		{
+			for (int cnt=0; cnt<10; cnt++)
+			{
+				sevenSegEnable(SEG_0);
+				sevenSegWrite(SEG_0, sevSegNumber / 10 );
+ 2c8:	0f 2e       	mov	r0, r31
+ 2ca:	fd ec       	ldi	r31, 0xCD	; 205
+ 2cc:	ef 2e       	mov	r14, r31
+ 2ce:	f0 2d       	mov	r31, r0
+{
+	sevenSegInit(SEG_0);
+	sevenSegInit(SEG_1);
+	uint8_t sevSegNumber = 0;
+	while(1){
+		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
+ 2d0:	f1 2c       	mov	r15, r1
+ 2d2:	26 c0       	rjmp	.+76     	; 0x320 <REQ1_Start+0x64>
+		{
+			for (int cnt=0; cnt<10; cnt++)
+			{
+				sevenSegEnable(SEG_0);
+ 2d4:	80 e0       	ldi	r24, 0x00	; 0
+ 2d6:	0e 94 6f 02 	call	0x4de	; 0x4de <sevenSegEnable>
+				sevenSegWrite(SEG_0, sevSegNumber / 10 );
+ 2da:	61 2f       	mov	r22, r17
+ 2dc:	80 e0       	ldi	r24, 0x00	; 0
+ 2de:	0e 94 91 02 	call	0x522	; 0x522 <sevenSegWrite>
+				softwareDelayMs(50);
+ 2e2:	62 e3       	ldi	r22, 0x32	; 50
+ 2e4:	70 e0       	ldi	r23, 0x00	; 0
+ 2e6:	80 e0       	ldi	r24, 0x00	; 0
+ 2e8:	90 e0       	ldi	r25, 0x00	; 0
+ 2ea:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+				sevenSegDisable(SEG_0);
+ 2ee:	80 e0       	ldi	r24, 0x00	; 0
+ 2f0:	0e 94 80 02 	call	0x500	; 0x500 <sevenSegDisable>
+				
+				
+				sevenSegEnable(SEG_1);
+ 2f4:	81 e0       	ldi	r24, 0x01	; 1
+ 2f6:	0e 94 6f 02 	call	0x4de	; 0x4de <sevenSegEnable>
+				sevenSegWrite(SEG_1, sevSegNumber % 10 );
+ 2fa:	60 2f       	mov	r22, r16
+ 2fc:	81 e0       	ldi	r24, 0x01	; 1
+ 2fe:	0e 94 91 02 	call	0x522	; 0x522 <sevenSegWrite>
+				softwareDelayMs(50);
+ 302:	62 e3       	ldi	r22, 0x32	; 50
+ 304:	70 e0       	ldi	r23, 0x00	; 0
+ 306:	80 e0       	ldi	r24, 0x00	; 0
+ 308:	90 e0       	ldi	r25, 0x00	; 0
+ 30a:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+				sevenSegDisable(SEG_1);
+ 30e:	81 e0       	ldi	r24, 0x01	; 1
+ 310:	0e 94 80 02 	call	0x500	; 0x500 <sevenSegDisable>
+ 314:	21 97       	sbiw	r28, 0x01	; 1
+	sevenSegInit(SEG_1);
+	uint8_t sevSegNumber = 0;
+	while(1){
+		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
+		{
+			for (int cnt=0; cnt<10; cnt++)
+ 316:	f1 f6       	brne	.-68     	; 0x2d4 <REQ1_Start+0x18>
+{
+	sevenSegInit(SEG_0);
+	sevenSegInit(SEG_1);
+	uint8_t sevSegNumber = 0;
+	while(1){
+		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
+ 318:	f3 94       	inc	r15
+ 31a:	84 e6       	ldi	r24, 0x64	; 100
+ 31c:	f8 16       	cp	r15, r24
+ 31e:	c1 f2       	breq	.-80     	; 0x2d0 <REQ1_Start+0x14>
+		{
+			for (int cnt=0; cnt<10; cnt++)
+			{
+				sevenSegEnable(SEG_0);
+				sevenSegWrite(SEG_0, sevSegNumber / 10 );
+ 320:	fe 9c       	mul	r15, r14
+ 322:	11 2d       	mov	r17, r1
+ 324:	11 24       	eor	r1, r1
+ 326:	16 95       	lsr	r17
+ 328:	16 95       	lsr	r17
+ 32a:	16 95       	lsr	r17
+				softwareDelayMs(50);
+				sevenSegDisable(SEG_0);
+				
+				
+				sevenSegEnable(SEG_1);
+				sevenSegWrite(SEG_1, sevSegNumber % 10 );
+ 32c:	91 2f       	mov	r25, r17
+ 32e:	99 0f       	add	r25, r25
+ 330:	89 2f       	mov	r24, r25
+ 332:	88 0f       	add	r24, r24
+ 334:	88 0f       	add	r24, r24
+ 336:	89 0f       	add	r24, r25
+ 338:	0f 2d       	mov	r16, r15
+ 33a:	08 1b       	sub	r16, r24
+ 33c:	ca e0       	ldi	r28, 0x0A	; 10
+ 33e:	d0 e0       	ldi	r29, 0x00	; 0
+ 340:	c9 cf       	rjmp	.-110    	; 0x2d4 <REQ1_Start+0x18>
+
+00000342 <REQ2_Start>:
+		second presses is less than 1s, the LED 1 will be on for 2 seconds then off
+		If the time between them is more than 1s then the led will be turned off after 1s
+ */
+void REQ2_Start(void)
+{
+	Led_Init(LED_1);
+ 342:	81 e0       	ldi	r24, 0x01	; 1
+ 344:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Led_Init>
+	uint8_t pressCounts = 0 ;
+	uint8_t internalPress = 0;
+	
+	while(1){
+		pressCounts = 0 ;
+		internalPress = 0;
+ 348:	00 e0       	ldi	r16, 0x00	; 0
+		if (pushButtonGetStatus(BTN_1) == Prepressed)
+ 34a:	81 e0       	ldi	r24, 0x01	; 1
+ 34c:	0e 94 39 02 	call	0x472	; 0x472 <pushButtonGetStatus>
+ 350:	81 30       	cpi	r24, 0x01	; 1
+ 352:	59 f5       	brne	.+86     	; 0x3aa <REQ2_Start+0x68>
+		{
+			softwareDelayMs(20);
+ 354:	64 e1       	ldi	r22, 0x14	; 20
+ 356:	70 e0       	ldi	r23, 0x00	; 0
+ 358:	80 e0       	ldi	r24, 0x00	; 0
+ 35a:	90 e0       	ldi	r25, 0x00	; 0
+ 35c:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+			if (pushButtonGetStatus(BTN_1) == Prepressed)
+ 360:	81 e0       	ldi	r24, 0x01	; 1
+ 362:	0e 94 39 02 	call	0x472	; 0x472 <pushButtonGetStatus>
+ 366:	81 30       	cpi	r24, 0x01	; 1
+ 368:	e1 f4       	brne	.+56     	; 0x3a2 <REQ2_Start+0x60>
+			{
+				if (pressCounts == 0)
+				{
+					pressCounts++;
+					Led_On(LED_1);
+ 36a:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
+ 36e:	c5 e0       	ldi	r28, 0x05	; 5
+ 370:	d0 e0       	ldi	r29, 0x00	; 0
+	uint8_t pressCounts = 0 ;
+	uint8_t internalPress = 0;
+	
+	while(1){
+		pressCounts = 0 ;
+		internalPress = 0;
+ 372:	10 2f       	mov	r17, r16
+					Led_On(LED_1);
+					/* break the blocking time to be able to listen */
+					
+							for (int i = 0; i < 5; i++){
+								
+									softwareDelayMs(200);
+ 374:	68 ec       	ldi	r22, 0xC8	; 200
+ 376:	70 e0       	ldi	r23, 0x00	; 0
+ 378:	80 e0       	ldi	r24, 0x00	; 0
+ 37a:	90 e0       	ldi	r25, 0x00	; 0
+ 37c:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+								if (pushButtonGetStatus(BTN_1) == Prepressed){
+ 380:	81 e0       	ldi	r24, 0x01	; 1
+ 382:	0e 94 39 02 	call	0x472	; 0x472 <pushButtonGetStatus>
+ 386:	81 30       	cpi	r24, 0x01	; 1
+ 388:	09 f4       	brne	.+2      	; 0x38c <REQ2_Start+0x4a>
+										internalPress = 1;
+ 38a:	11 e0       	ldi	r17, 0x01	; 1
+ 38c:	21 97       	sbiw	r28, 0x01	; 1
+				{
+					pressCounts++;
+					Led_On(LED_1);
+					/* break the blocking time to be able to listen */
+					
+							for (int i = 0; i < 5; i++){
+ 38e:	91 f7       	brne	.-28     	; 0x374 <REQ2_Start+0x32>
+								if (pushButtonGetStatus(BTN_1) == Prepressed){
+										internalPress = 1;
+											}
+										  }
+					
+											if (internalPress == 0)
+ 390:	11 23       	and	r17, r17
+ 392:	d9 f2       	breq	.-74     	; 0x34a <REQ2_Start+0x8>
+												{
+													pressCounts = 0;
+												}else {
+														pressCounts++;
+														softwareDelayMs(1000);
+ 394:	68 ee       	ldi	r22, 0xE8	; 232
+ 396:	73 e0       	ldi	r23, 0x03	; 3
+ 398:	80 e0       	ldi	r24, 0x00	; 0
+ 39a:	90 e0       	ldi	r25, 0x00	; 0
+ 39c:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+ 3a0:	d4 cf       	rjmp	.-88     	; 0x34a <REQ2_Start+0x8>
+														}
+					}
+				} else {
+				Led_Off(LED_1);
+ 3a2:	81 e0       	ldi	r24, 0x01	; 1
+ 3a4:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
+ 3a8:	d0 cf       	rjmp	.-96     	; 0x34a <REQ2_Start+0x8>
+			}
+			} else {
+			Led_Off(LED_1);
+ 3aa:	81 e0       	ldi	r24, 0x01	; 1
+ 3ac:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
+ 3b0:	cc cf       	rjmp	.-104    	; 0x34a <REQ2_Start+0x8>
+
+000003b2 <Go_State>:
+	
 }
 
 void Go_State(void)
 {
 	Led_On(LED_1);
- 2bc:	81 e0       	ldi	r24, 0x01	; 1
- 2be:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
+ 3b2:	81 e0       	ldi	r24, 0x01	; 1
+ 3b4:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
 	softwareDelayMs(1000);
- 2c2:	68 ee       	ldi	r22, 0xE8	; 232
- 2c4:	73 e0       	ldi	r23, 0x03	; 3
- 2c6:	80 e0       	ldi	r24, 0x00	; 0
- 2c8:	90 e0       	ldi	r25, 0x00	; 0
- 2ca:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+ 3b8:	68 ee       	ldi	r22, 0xE8	; 232
+ 3ba:	73 e0       	ldi	r23, 0x03	; 3
+ 3bc:	80 e0       	ldi	r24, 0x00	; 0
+ 3be:	90 e0       	ldi	r25, 0x00	; 0
+ 3c0:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
 	Led_Off(LED_1);
- 2ce:	81 e0       	ldi	r24, 0x01	; 1
- 2d0:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
- 2d4:	08 95       	ret
+ 3c4:	81 e0       	ldi	r24, 0x01	; 1
+ 3c6:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
+ 3ca:	08 95       	ret
 
-000002d6 <Ready_State>:
+000003cc <Ready_State>:
 
 
 
 void Ready_State(void)
 {
 	Led_On(LED_2);
- 2d6:	82 e0       	ldi	r24, 0x02	; 2
- 2d8:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
+ 3cc:	82 e0       	ldi	r24, 0x02	; 2
+ 3ce:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
 	softwareDelayMs(1000);
- 2dc:	68 ee       	ldi	r22, 0xE8	; 232
- 2de:	73 e0       	ldi	r23, 0x03	; 3
- 2e0:	80 e0       	ldi	r24, 0x00	; 0
- 2e2:	90 e0       	ldi	r25, 0x00	; 0
- 2e4:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+ 3d2:	68 ee       	ldi	r22, 0xE8	; 232
+ 3d4:	73 e0       	ldi	r23, 0x03	; 3
+ 3d6:	80 e0       	ldi	r24, 0x00	; 0
+ 3d8:	90 e0       	ldi	r25, 0x00	; 0
+ 3da:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
 	Led_Off(LED_2);
- 2e8:	82 e0       	ldi	r24, 0x02	; 2
- 2ea:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
- 2ee:	08 95       	ret
+ 3de:	82 e0       	ldi	r24, 0x02	; 2
+ 3e0:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
+ 3e4:	08 95       	ret
 
-000002f0 <Stop_State>:
+000003e6 <Stop_State>:
 }
 
 
 void Stop_State(void)
 {
 	Led_On(LED_3);
- 2f0:	83 e0       	ldi	r24, 0x03	; 3
- 2f2:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
+ 3e6:	83 e0       	ldi	r24, 0x03	; 3
+ 3e8:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
 	softwareDelayMs(1000);
- 2f6:	68 ee       	ldi	r22, 0xE8	; 232
- 2f8:	73 e0       	ldi	r23, 0x03	; 3
- 2fa:	80 e0       	ldi	r24, 0x00	; 0
- 2fc:	90 e0       	ldi	r25, 0x00	; 0
- 2fe:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
+ 3ec:	68 ee       	ldi	r22, 0xE8	; 232
+ 3ee:	73 e0       	ldi	r23, 0x03	; 3
+ 3f0:	80 e0       	ldi	r24, 0x00	; 0
+ 3f2:	90 e0       	ldi	r25, 0x00	; 0
+ 3f4:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
 	Led_Off(LED_3);
- 302:	83 e0       	ldi	r24, 0x03	; 3
- 304:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
- 308:	08 95       	ret
-
-0000030a <REQ1_Start>:
-}
-
-
-void REQ1_Start(void)
-{
-	sevenSegInit(SEG_0);
- 30a:	80 e0       	ldi	r24, 0x00	; 0
- 30c:	0e 94 57 02 	call	0x4ae	; 0x4ae <sevenSegInit>
-	sevenSegInit(SEG_1);
- 310:	81 e0       	ldi	r24, 0x01	; 1
- 312:	0e 94 57 02 	call	0x4ae	; 0x4ae <sevenSegInit>
-		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
-		{
-			for (int cnt=0; cnt<10; cnt++)
-			{
-				sevenSegEnable(SEG_0);
-				sevenSegWrite(SEG_0, sevSegNumber / 10 );
- 316:	0f 2e       	mov	r0, r31
- 318:	fd ec       	ldi	r31, 0xCD	; 205
- 31a:	ef 2e       	mov	r14, r31
- 31c:	f0 2d       	mov	r31, r0
-{
-	sevenSegInit(SEG_0);
-	sevenSegInit(SEG_1);
-	uint8_t sevSegNumber = 0;
-	while(1){
-		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
- 31e:	f1 2c       	mov	r15, r1
- 320:	26 c0       	rjmp	.+76     	; 0x36e <REQ1_Start+0x64>
-		{
-			for (int cnt=0; cnt<10; cnt++)
-			{
-				sevenSegEnable(SEG_0);
- 322:	80 e0       	ldi	r24, 0x00	; 0
- 324:	0e 94 6f 02 	call	0x4de	; 0x4de <sevenSegEnable>
-				sevenSegWrite(SEG_0, sevSegNumber / 10 );
- 328:	61 2f       	mov	r22, r17
- 32a:	80 e0       	ldi	r24, 0x00	; 0
- 32c:	0e 94 91 02 	call	0x522	; 0x522 <sevenSegWrite>
-				softwareDelayMs(50);
- 330:	62 e3       	ldi	r22, 0x32	; 50
- 332:	70 e0       	ldi	r23, 0x00	; 0
- 334:	80 e0       	ldi	r24, 0x00	; 0
- 336:	90 e0       	ldi	r25, 0x00	; 0
- 338:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
-				sevenSegDisable(SEG_0);
- 33c:	80 e0       	ldi	r24, 0x00	; 0
- 33e:	0e 94 80 02 	call	0x500	; 0x500 <sevenSegDisable>
-				
-				
-				sevenSegEnable(SEG_1);
- 342:	81 e0       	ldi	r24, 0x01	; 1
- 344:	0e 94 6f 02 	call	0x4de	; 0x4de <sevenSegEnable>
-				sevenSegWrite(SEG_1, sevSegNumber % 10 );
- 348:	60 2f       	mov	r22, r16
- 34a:	81 e0       	ldi	r24, 0x01	; 1
- 34c:	0e 94 91 02 	call	0x522	; 0x522 <sevenSegWrite>
-				softwareDelayMs(50);
- 350:	62 e3       	ldi	r22, 0x32	; 50
- 352:	70 e0       	ldi	r23, 0x00	; 0
- 354:	80 e0       	ldi	r24, 0x00	; 0
- 356:	90 e0       	ldi	r25, 0x00	; 0
- 358:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
-				sevenSegDisable(SEG_1);
- 35c:	81 e0       	ldi	r24, 0x01	; 1
- 35e:	0e 94 80 02 	call	0x500	; 0x500 <sevenSegDisable>
- 362:	21 97       	sbiw	r28, 0x01	; 1
-	sevenSegInit(SEG_1);
-	uint8_t sevSegNumber = 0;
-	while(1){
-		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
-		{
-			for (int cnt=0; cnt<10; cnt++)
- 364:	f1 f6       	brne	.-68     	; 0x322 <REQ1_Start+0x18>
-{
-	sevenSegInit(SEG_0);
-	sevenSegInit(SEG_1);
-	uint8_t sevSegNumber = 0;
-	while(1){
-		for ( sevSegNumber = 0; sevSegNumber < 100 ; sevSegNumber++ )
- 366:	f3 94       	inc	r15
- 368:	84 e6       	ldi	r24, 0x64	; 100
- 36a:	f8 16       	cp	r15, r24
- 36c:	c1 f2       	breq	.-80     	; 0x31e <REQ1_Start+0x14>
-		{
-			for (int cnt=0; cnt<10; cnt++)
-			{
-				sevenSegEnable(SEG_0);
-				sevenSegWrite(SEG_0, sevSegNumber / 10 );
- 36e:	fe 9c       	mul	r15, r14
- 370:	11 2d       	mov	r17, r1
- 372:	11 24       	eor	r1, r1
- 374:	16 95       	lsr	r17
- 376:	16 95       	lsr	r17
- 378:	16 95       	lsr	r17
-				softwareDelayMs(50);
-				sevenSegDisable(SEG_0);
-				
-				
-				sevenSegEnable(SEG_1);
-				sevenSegWrite(SEG_1, sevSegNumber % 10 );
- 37a:	91 2f       	mov	r25, r17
- 37c:	99 0f       	add	r25, r25
- 37e:	89 2f       	mov	r24, r25
- 380:	88 0f       	add	r24, r24
- 382:	88 0f       	add	r24, r24
- 384:	89 0f       	add	r24, r25
- 386:	0f 2d       	mov	r16, r15
- 388:	08 1b       	sub	r16, r24
- 38a:	ca e0       	ldi	r28, 0x0A	; 10
- 38c:	d0 e0       	ldi	r29, 0x00	; 0
- 38e:	c9 cf       	rjmp	.-110    	; 0x322 <REQ1_Start+0x18>
-
-00000390 <REQ2_Start>:
-}
-
-
-void REQ2_Start(void)
-{
-	Led_Init(LED_1);
- 390:	81 e0       	ldi	r24, 0x01	; 1
- 392:	0e 94 ea 00 	call	0x1d4	; 0x1d4 <Led_Init>
-	uint8_t pressCounts = 0 ;
-	uint8_t intPress = 0;
-	while(1){
-		pressCounts = 0 ;
-		intPress = 0;
- 396:	00 e0       	ldi	r16, 0x00	; 0
-		if (pushButtonGetStatus(BTN_1) == Prepressed)
- 398:	81 e0       	ldi	r24, 0x01	; 1
- 39a:	0e 94 39 02 	call	0x472	; 0x472 <pushButtonGetStatus>
- 39e:	81 30       	cpi	r24, 0x01	; 1
- 3a0:	59 f5       	brne	.+86     	; 0x3f8 <REQ2_Start+0x68>
-		{
-			softwareDelayMs(20);
- 3a2:	64 e1       	ldi	r22, 0x14	; 20
- 3a4:	70 e0       	ldi	r23, 0x00	; 0
- 3a6:	80 e0       	ldi	r24, 0x00	; 0
- 3a8:	90 e0       	ldi	r25, 0x00	; 0
- 3aa:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
-			if (pushButtonGetStatus(BTN_1) == Prepressed)
- 3ae:	81 e0       	ldi	r24, 0x01	; 1
- 3b0:	0e 94 39 02 	call	0x472	; 0x472 <pushButtonGetStatus>
- 3b4:	81 30       	cpi	r24, 0x01	; 1
- 3b6:	e1 f4       	brne	.+56     	; 0x3f0 <REQ2_Start+0x60>
-			{
-				if (pressCounts == 0)
-				{
-					pressCounts++;
-					Led_On(LED_1);
- 3b8:	0e 94 1e 01 	call	0x23c	; 0x23c <Led_On>
- 3bc:	c5 e0       	ldi	r28, 0x05	; 5
- 3be:	d0 e0       	ldi	r29, 0x00	; 0
-	Led_Init(LED_1);
-	uint8_t pressCounts = 0 ;
-	uint8_t intPress = 0;
-	while(1){
-		pressCounts = 0 ;
-		intPress = 0;
- 3c0:	10 2f       	mov	r17, r16
-				{
-					pressCounts++;
-					Led_On(LED_1);
-					for (int i = 0; i < 5; i++)
-					{
-						softwareDelayMs(200);
- 3c2:	68 ec       	ldi	r22, 0xC8	; 200
- 3c4:	70 e0       	ldi	r23, 0x00	; 0
- 3c6:	80 e0       	ldi	r24, 0x00	; 0
- 3c8:	90 e0       	ldi	r25, 0x00	; 0
- 3ca:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
-						if (pushButtonGetStatus(BTN_1) == Prepressed){
- 3ce:	81 e0       	ldi	r24, 0x01	; 1
- 3d0:	0e 94 39 02 	call	0x472	; 0x472 <pushButtonGetStatus>
- 3d4:	81 30       	cpi	r24, 0x01	; 1
- 3d6:	09 f4       	brne	.+2      	; 0x3da <REQ2_Start+0x4a>
-							intPress = 1;
- 3d8:	11 e0       	ldi	r17, 0x01	; 1
- 3da:	21 97       	sbiw	r28, 0x01	; 1
-			{
-				if (pressCounts == 0)
-				{
-					pressCounts++;
-					Led_On(LED_1);
-					for (int i = 0; i < 5; i++)
- 3dc:	91 f7       	brne	.-28     	; 0x3c2 <REQ2_Start+0x32>
-						softwareDelayMs(200);
-						if (pushButtonGetStatus(BTN_1) == Prepressed){
-							intPress = 1;
-						}
-					}
-					if (intPress == 0)
- 3de:	11 23       	and	r17, r17
- 3e0:	d9 f2       	breq	.-74     	; 0x398 <REQ2_Start+0x8>
-					{
-						pressCounts = 0;
-						} else {
-						pressCounts++;
-						softwareDelayMs(1000);
- 3e2:	68 ee       	ldi	r22, 0xE8	; 232
- 3e4:	73 e0       	ldi	r23, 0x03	; 3
- 3e6:	80 e0       	ldi	r24, 0x00	; 0
- 3e8:	90 e0       	ldi	r25, 0x00	; 0
- 3ea:	0e 94 ad 02 	call	0x55a	; 0x55a <softwareDelayMs>
- 3ee:	d4 cf       	rjmp	.-88     	; 0x398 <REQ2_Start+0x8>
-					}
-				}
-				} else {
-				Led_Off(LED_1);
- 3f0:	81 e0       	ldi	r24, 0x01	; 1
- 3f2:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
- 3f6:	d0 cf       	rjmp	.-96     	; 0x398 <REQ2_Start+0x8>
-			}
-			} else {
-			Led_Off(LED_1);
- 3f8:	81 e0       	ldi	r24, 0x01	; 1
+ 3f8:	83 e0       	ldi	r24, 0x03	; 3
  3fa:	0e 94 3e 01 	call	0x27c	; 0x27c <Led_Off>
- 3fe:	cc cf       	rjmp	.-104    	; 0x398 <REQ2_Start+0x8>
+ 3fe:	08 95       	ret
 
 00000400 <REQ3_Start>:
-
-
+ *
+ */
 
 void REQ3_Start(void)
 {
@@ -792,32 +793,32 @@ void REQ3_Start(void)
  424:	fa cf       	rjmp	.-12     	; 0x41a <REQ3_Start+0x1a>
 			case 0:
 			Go_State();
- 426:	0e 94 5e 01 	call	0x2bc	; 0x2bc <Go_State>
+ 426:	0e 94 d9 01 	call	0x3b2	; 0x3b2 <Go_State>
 			State = 1;
  42a:	8d 2f       	mov	r24, r29
 			break;
  42c:	f6 cf       	rjmp	.-20     	; 0x41a <REQ3_Start+0x1a>
 			case 1:
 			Ready_State();
- 42e:	0e 94 6b 01 	call	0x2d6	; 0x2d6 <Ready_State>
+ 42e:	0e 94 e6 01 	call	0x3cc	; 0x3cc <Ready_State>
 			State = 2;
  432:	81 2f       	mov	r24, r17
 			break;
  434:	f2 cf       	rjmp	.-28     	; 0x41a <REQ3_Start+0x1a>
 			case 2:
 			Stop_State();
- 436:	0e 94 78 01 	call	0x2f0	; 0x2f0 <Stop_State>
+ 436:	0e 94 f3 01 	call	0x3e6	; 0x3e6 <Stop_State>
 			State = 0;
  43a:	8c 2f       	mov	r24, r28
 			break;
  43c:	ee cf       	rjmp	.-36     	; 0x41a <REQ3_Start+0x1a>
 
 0000043e <main>:
-void REQ3_Start(void);
-
-int main(void)
 {
+	/* dual inline package switch to choose the requirement to show */
+	
 	uint8_t REQ_Select = 0;
+	
 	gpioPinDirection(GPIOA, (BIT5 | BIT6 | BIT7), INPUT);
  43e:	40 e0       	ldi	r20, 0x00	; 0
  440:	60 ee       	ldi	r22, 0xE0	; 224
@@ -827,9 +828,11 @@ int main(void)
  448:	60 ee       	ldi	r22, 0xE0	; 224
  44a:	80 e0       	ldi	r24, 0x00	; 0
  44c:	0e 94 46 00 	call	0x8c	; 0x8c <gpioPortWrite>
+	
 	REQ_Select = gpioPortRead(GPIOA);
  450:	80 e0       	ldi	r24, 0x00	; 0
  452:	0e 94 56 00 	call	0xac	; 0xac <gpioPortRead>
+	
 	switch(REQ_Select)
  456:	80 3a       	cpi	r24, 0xA0	; 160
  458:	39 f0       	breq	.+14     	; 0x468 <main+0x2a>
@@ -839,15 +842,15 @@ int main(void)
  460:	29 f0       	breq	.+10     	; 0x46c <main+0x2e>
  462:	06 c0       	rjmp	.+12     	; 0x470 <main+0x32>
 	{
-		case 192:
+		case 192: //110
 			REQ1_Start();
- 464:	0e 94 85 01 	call	0x30a	; 0x30a <REQ1_Start>
+ 464:	0e 94 5e 01 	call	0x2bc	; 0x2bc <REQ1_Start>
 			break;
-		case 160:
+		case 160: //101
 			REQ2_Start();
- 468:	0e 94 c8 01 	call	0x390	; 0x390 <REQ2_Start>
+ 468:	0e 94 a1 01 	call	0x342	; 0x342 <REQ2_Start>
 			break;
-		case 96:
+		case 96:// 011
 			REQ3_Start();
  46c:	0e 94 00 02 	call	0x400	; 0x400 <REQ3_Start>
  470:	ff cf       	rjmp	.-2      	; 0x470 <main+0x32>
@@ -913,8 +916,8 @@ En_buttonStatus_t pushButtonGetStatus(En_buttonId_t en_butotn_id){
 000004ae <sevenSegInit>:
 
 /**
- * Description: 
- * @param 
+ * Description:  initialize seven segment data port as output
+ * @param a_segment_id
  */
 void sevenSegInit(En_SevenSegId_t a_segment_id){
  4ae:	cf 93       	push	r28
@@ -956,8 +959,8 @@ void sevenSegInit(En_SevenSegId_t a_segment_id){
  4dc:	08 95       	ret
 
 000004de <sevenSegEnable>:
- * Description: 
- * @param 
+ * Description:  enable the enable bits of the 7 segment to be able to write 
+ * @param en_segment_id
  */
 void sevenSegEnable(En_SevenSegId_t en_segment_id){
 	
@@ -985,8 +988,8 @@ void sevenSegEnable(En_SevenSegId_t en_segment_id){
  4fe:	08 95       	ret
 
 00000500 <sevenSegDisable>:
- * Description: 
- * @param 
+ * Description: disable the enable bits of 7 segment 
+ * @param en_segment_id
  */
 void sevenSegDisable(En_SevenSegId_t en_segment_id){
 	
@@ -1016,10 +1019,10 @@ void sevenSegDisable(En_SevenSegId_t en_segment_id){
 00000522 <sevenSegWrite>:
 
 /**
- * Description: 
- * @param 
+ * Description: writes a digit on 7 segment 
+ * @param en_segment_id, digit
  */
-void sevenSegWrite(En_SevenSegId_t en_segment_id , uint8_t number ){
+void sevenSegWrite(En_SevenSegId_t en_segment_id , uint8_t digit ){
  522:	cf 93       	push	r28
  524:	c6 2f       	mov	r28, r22
 	
@@ -1035,7 +1038,7 @@ void sevenSegWrite(En_SevenSegId_t en_segment_id , uint8_t number ){
  530:	60 e0       	ldi	r22, 0x00	; 0
  532:	81 e0       	ldi	r24, 0x01	; 1
  534:	0e 94 46 00 	call	0x8c	; 0x8c <gpioPortWrite>
-					gpioPortWrite(SEG_BCD_GPIO, 0x0F & number);
+					gpioPortWrite(SEG_BCD_GPIO, 0x0F & digit);
  538:	6c 2f       	mov	r22, r28
  53a:	6f 70       	andi	r22, 0x0F	; 15
  53c:	81 e0       	ldi	r24, 0x01	; 1
@@ -1047,7 +1050,7 @@ void sevenSegWrite(En_SevenSegId_t en_segment_id , uint8_t number ){
  544:	60 e0       	ldi	r22, 0x00	; 0
  546:	81 e0       	ldi	r24, 0x01	; 1
  548:	0e 94 46 00 	call	0x8c	; 0x8c <gpioPortWrite>
-					gpioPortWrite(SEG_BCD_GPIO, 0x0F & number);
+					gpioPortWrite(SEG_BCD_GPIO, 0x0F & digit);
  54c:	6c 2f       	mov	r22, r28
  54e:	6f 70       	andi	r22, 0x0F	; 15
  550:	81 e0       	ldi	r24, 0x01	; 1

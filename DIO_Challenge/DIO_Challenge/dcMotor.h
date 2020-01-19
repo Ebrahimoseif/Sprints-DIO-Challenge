@@ -1,8 +1,8 @@
 /*
  * MotorDC.h
  *
- *  Created on: Oct 26, 2019
- *      Author: Sprints
+ *  
+ *  Author: EbrahimOseif
  */
 
 #ifndef DCMOTOR_H_

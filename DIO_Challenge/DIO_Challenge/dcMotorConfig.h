@@ -1,8 +1,8 @@
 /*
  * MotorDC_CFG.h
  *
- *  Created on: Oct 26, 2019
- *      Author: Sprints
+ *  
+ **  Author: EbrahimOseif
  */
 
 #ifndef DCMOTORCONFIG_H_

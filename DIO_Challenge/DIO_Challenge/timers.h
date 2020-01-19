@@ -1,8 +1,7 @@
 /*
  * timers.h
  *
- *  Created on: Oct 22, 2019
- *      Author: Sprints
+ *  *  Author: EbrahimOseif
  */
 
 #ifndef TIMERS_H_

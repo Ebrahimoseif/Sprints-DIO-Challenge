@@ -1,8 +1,7 @@
 /*
  * pushButtonConfig.h
  *
- *  Created on: Oct 21, 2019
- *      Author: Sprints
+ * *  Author: EbrahimOseif
  */
 
 #ifndef PUSHBUTTONCONFIG_H_

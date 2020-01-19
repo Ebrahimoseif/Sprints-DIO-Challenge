@@ -1,8 +1,7 @@
 /*
  * sevenSeg_BCD_CFG.h
  *
- *  Created on: Oct 26, 2019
- *      Author: Sprints
+ *  *  Author: EbrahimOseif
  */
 
 #ifndef SEVENSEGCONFIG_H_
