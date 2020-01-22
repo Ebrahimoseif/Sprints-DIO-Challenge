@@ -9,6 +9,11 @@
 #include "pushButton.h"
 #include "sevenSeg.h"
 #include "softwareDelay.h"
+#include "timers.h"
+
+
+ extern uint8_t prescaler;
+ extern uint8_t T1_prescaler;
 
 
 void REQ1_Start(void);
@@ -21,8 +26,23 @@ void Go_State(void);
 void Ready_State(void);
 void Stop_State(void);
 
-int main(void)
+
+
+__attribute__((signal,__INTR_ATTRS));
+void __vector_11 (void)
 {
+
+	PORTC_DATA |=0XFF;
+	
+}
+
+int main(void)
+{ 
+		PORTC_DIR = 0XFF;
+		
+	timer0Init(T0_NORMAL_MODE, T0_OC0_DIS, T0_PRESCALER_64, 0,0 ,T0_INTERRUPT_NORMAL);
+	//timer1Init(T1_NORMAL_MODE, T1_OC1_DIS, T1_PRESCALER_64, 0,0,0,0 ,T1_POLLING);
+     SREG |= (1<<7); 
 	/* dual inline package switch to choose the requirement to show */
 	
 	uint8_t REQ_Select = 0;
@@ -71,13 +91,15 @@ void REQ1_Start(void)
 			{
 				sevenSegEnable(SEG_0);
 				sevenSegWrite(SEG_0, sevSegNumber / 10 );
-				softwareDelayMs(50);
+				//softwareDelayMs(50);
+				timer0DelayMs(20);
 				sevenSegDisable(SEG_0);
 				
 				
 				sevenSegEnable(SEG_1);
 				sevenSegWrite(SEG_1, sevSegNumber % 10 );
-				softwareDelayMs(50);
+				//softwareDelayMs(50);
+				timer0DelayMs(20);
 				sevenSegDisable(SEG_1);
 			}
 		}
@@ -102,7 +124,8 @@ void REQ2_Start(void)
 		internalPress = 0;
 		if (pushButtonGetStatus(BTN_1) == Prepressed)
 		{
-			softwareDelayMs(20);
+			//softwareDelayMs(20);
+			timer0DelayMs(20);
 			if (pushButtonGetStatus(BTN_1) == Prepressed)
 			{
 				if (pressCounts == 0)
@@ -113,7 +136,9 @@ void REQ2_Start(void)
 					
 							for (int i = 0; i < 5; i++){
 								
-									softwareDelayMs(200);
+								//	softwareDelayMs(200);
+								timer0DelayMs(200);
+
 								if (pushButtonGetStatus(BTN_1) == Prepressed){
 										internalPress = 1;
 											}
@@ -124,8 +149,9 @@ void REQ2_Start(void)
 													pressCounts = 0;
 												}else {
 														pressCounts++;
-														softwareDelayMs(1000);
-														}
+														//softwareDelayMs(1000);
+														timer0DelayMs(1000);
+																		}
 					}
 				} else {
 				Led_Off(LED_1);
@@ -177,7 +203,8 @@ void REQ3_Start(void)
 void Go_State(void)
 {
 	Led_On(LED_1);
-	softwareDelayMs(1000);
+	//softwareDelayMs(1000);
+	timer0DelayMs(1000);
 	Led_Off(LED_1);
 }
 
@@ -186,7 +213,9 @@ void Go_State(void)
 void Ready_State(void)
 {
 	Led_On(LED_2);
-	softwareDelayMs(1000);
+	//softwareDelayMs(1000);
+	timer0DelayMs(1000);
+
 	Led_Off(LED_2);
 }
 
@@ -194,7 +223,10 @@ void Ready_State(void)
 void Stop_State(void)
 {
 	Led_On(LED_3);
-	softwareDelayMs(1000);
+	//softwareDelayMs(1000);
+	timer0DelayMs(1000);
+
 	Led_Off(LED_3);
 
 }
+

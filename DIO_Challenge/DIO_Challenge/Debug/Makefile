@@ -42,7 +42,8 @@ C_SRCS +=  \
 ../main.c \
 ../pushButton.c \
 ../sevenSeg.c \
-../softwareDelay.c
+../softwareDelay.c \
+../timers.c
 
 
 PREPROCESSING_SRCS += 
@@ -57,7 +58,8 @@ led.o \
 main.o \
 pushButton.o \
 sevenSeg.o \
-softwareDelay.o
+softwareDelay.o \
+timers.o
 
 OBJS_AS_ARGS +=  \
 gpio.o \
@@ -65,7 +67,8 @@ led.o \
 main.o \
 pushButton.o \
 sevenSeg.o \
-softwareDelay.o
+softwareDelay.o \
+timers.o
 
 C_DEPS +=  \
 gpio.d \
@@ -73,7 +76,8 @@ led.d \
 main.d \
 pushButton.d \
 sevenSeg.d \
-softwareDelay.d
+softwareDelay.d \
+timers.d
 
 C_DEPS_AS_ARGS +=  \
 gpio.d \
@@ -81,7 +85,8 @@ led.d \
 main.d \
 pushButton.d \
 sevenSeg.d \
-softwareDelay.d
+softwareDelay.d \
+timers.d
 
 OUTPUT_FILE_PATH +=DIO_Challenge.elf
 
@@ -133,6 +138,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./softwareDelay.o: .././softwareDelay.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\gcc\dev\atmega32" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./timers.o: .././timers.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\gcc\dev\atmega32" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

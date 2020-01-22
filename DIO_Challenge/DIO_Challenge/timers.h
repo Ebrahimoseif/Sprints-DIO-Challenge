@@ -33,7 +33,8 @@ typedef enum En_timer0OC_t{
 }En_timer0OC_t;
 
 typedef enum En_timer0perscaler_t{
-	T0_NO_CLOCK=0,T0_PRESCALER_NO=0x01,T0_PRESCALER_8=0x02,T0_PRESCALER_64=0x03,T0_PRESCALER_256=0x04,T0_PRESCALER_1024=0x05
+	T0_NO_CLOCK=0xF8,T0_PRESCALER_NO=0x01,T0_PRESCALER_8=0x02,
+	T0_PRESCALER_64=0x03,T0_PRESCALER_256=0x04,T0_PRESCALER_1024=0x05
 }En_timer0perscaler_t;
 
 typedef enum En_timer0Interrupt_t{
@@ -95,7 +96,9 @@ typedef enum En_timer2Interrupt_t{
  * @param outputCompare
  * @param interruptMask
  */
-void timer0Init(En_timer0Mode_t en_mode,En_timer0OC_t en_OC0,En_timer0perscaler_t en_prescal, uint8_t u8_initialValue, uint8_t u8_outputCompare, En_timer0Interrupt_t en_interruptMask);
+void timer0Init(En_timer0Mode_t en_mode,En_timer0OC_t en_OC0,
+				En_timer0perscaler_t en_prescal, uint8_t u8_initialValue,
+			    uint8_t u8_outputCompare, En_timer0Interrupt_t en_interruptMask);
 
 /**
  * Description:

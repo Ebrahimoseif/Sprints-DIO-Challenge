@@ -14,3 +14,5 @@ sevenSeg.c
 
 softwareDelay.c
 
+timers.c
+

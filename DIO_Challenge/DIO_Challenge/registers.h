@@ -9,6 +9,9 @@
 
 #include "std_types.h"
 
+#define SREG	*((reg_type8_t)(0X5f))
+
+
 /*
  * General Registers
  */

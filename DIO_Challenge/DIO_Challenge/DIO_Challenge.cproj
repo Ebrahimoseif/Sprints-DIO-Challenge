@@ -145,6 +145,9 @@
     <Compile Include="gpio.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="interrupt.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="led.c">
       <SubType>compile</SubType>
     </Compile>
@@ -185,6 +188,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="std_types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timers.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timers.h">
