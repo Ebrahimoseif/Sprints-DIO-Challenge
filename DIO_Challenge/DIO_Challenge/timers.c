@@ -8,10 +8,10 @@
 #include "timers.h"
 
 
-uint8_t g_duty;
 
 #define FULL_DUTY 100
-#define  FREQUENCY 8000000UL
+#define FCPU 16000000UL
+
 
 
 uint8_t prescaler = T0_NO_CLOCK;
@@ -38,9 +38,9 @@ void timer0Init(En_timer0Mode_t en_mode, En_timer0OC_t en_OC0,
 				 
 				timer0Set(u8_initialValue);
 				
-				if( en_mode == T0_COMP_MODE){
+				//if( en_mode == T0_COMP_MODE){
 					 OCR0 = u8_outputCompare;
-				}
+				//}
 				prescaler = en_prescal;
 				TIMSK |= en_interruptMask;
 					
@@ -115,9 +115,21 @@ void timer0DelayUs(uint32_t u32_delay_in_us);
  * @param dutyCycle
  */
 void timer0SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency){
-	
-	g_duty = u8_dutyCycle;
-	
+		
+		uint16_t pwmTicks;
+		uint8_t onTime ;
+		pwmTicks = FCPU / (u8_frequency * 1000 );
+		onTime = u8_dutyCycle * pwmTicks / 100;
+		
+		timer0Init(T0_NORMAL_MODE, T0_OC0_DIS, T0_PRESCALER_8,
+				0, onTime, T0_INTERRUPT_NORMAL | T0_INTERRUPT_CMP);
+		
+		//OCR0 = onTime;
+		timer0Start();
+		
+		
+		/*OCR0*/
+		
 }
 
 

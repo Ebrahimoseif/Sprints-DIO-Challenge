@@ -10,10 +10,12 @@
 #include "sevenSeg.h"
 #include "softwareDelay.h"
 #include "timers.h"
+#include "interrupt.h"
 
 
  extern uint8_t prescaler;
  extern uint8_t T1_prescaler;
+ extern	uint8_t g_duty;
 
 
 void REQ1_Start(void);
@@ -28,23 +30,59 @@ void Stop_State(void);
 
 
 
-__attribute__((signal,__INTR_ATTRS));
-void __vector_11 (void)
-{
+// __attribute__((signal,__INTR_ATTRS));
+// void __vector_11 (void)
+// {
+// 
+// 	PORTC_DATA |=0XFF;
+// 	
+// }
 
-	PORTC_DATA |=0XFF;
+uint8_t cycleCounter = 0;
+
+
+ ISR( TIMER0_COMP_vect ){
 	
+		 gpioPinWrite(GPIOC, BIT0, LOW);
+		 //	 softwareDelayMs(100);
+
 }
+ ISR( TIMER0_OVF_vect ){
+	 
+	 gpioPinWrite(GPIOC, BIT0, HIGH);
+	// softwareDelayMs(100);
+	// cycleCounter++;
+ }
+
 
 int main(void)
 { 
-		PORTC_DIR = 0XFF;
+		PORTC_DIR = 0Xff;
+		PORTC_DATA = 0;
+
+			timer0SwPWM( 70, 200);
 		
-	timer0Init(T0_NORMAL_MODE, T0_OC0_DIS, T0_PRESCALER_64, 0,0 ,T0_INTERRUPT_NORMAL);
+
+
 	//timer1Init(T1_NORMAL_MODE, T1_OC1_DIS, T1_PRESCALER_64, 0,0,0,0 ,T1_POLLING);
      SREG |= (1<<7); 
+	 
+	 while(1){
+		 			timer0SwPWM( 70, 200);
+
+		 	softwareDelayMs(3000);
+		 	timer0SwPWM( 30, 200);
+		 	softwareDelayMs(3000);
+	 }
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
 	/* dual inline package switch to choose the requirement to show */
-	
 	uint8_t REQ_Select = 0;
 	
 	gpioPinDirection(GPIOA, (BIT5 | BIT6 | BIT7), INPUT);
@@ -208,8 +246,6 @@ void Go_State(void)
 	Led_Off(LED_1);
 }
 
-
-
 void Ready_State(void)
 {
 	Led_On(LED_2);
@@ -218,7 +254,6 @@ void Ready_State(void)
 
 	Led_Off(LED_2);
 }
-
 
 void Stop_State(void)
 {
