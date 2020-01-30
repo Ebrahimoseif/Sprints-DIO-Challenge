@@ -11,12 +11,17 @@
 #include "softwareDelay.h"
 #include "timers.h"
 #include "interrupt.h"
+#include "SwICU.h"
+#include "HwPWM.h"
 
 
  extern uint8_t prescaler;
  extern uint8_t T1_prescaler;
- extern	uint8_t g_duty;
-
+ extern uint8_t g_duty;
+ 
+ uint8_t SwICU_overflowCounter;
+ uint8_t SwICU_Reading;
+ 
 
 void REQ1_Start(void);
 void REQ2_Start(void);
@@ -29,83 +34,176 @@ void Ready_State(void);
 void Stop_State(void);
 
 
+/* SW ICU application */
 
-// __attribute__((signal,__INTR_ATTRS));
-// void __vector_11 (void)
-// {
-// 
-// 	PORTC_DATA |=0XFF;
-// 	
-// }
+ISR( INT2_vect) {
+	
+		static uint8_t edgeDetect = SwICU_EdgeRisiging ;
+		if (edgeDetect == SwICU_EdgeRisiging  )
+		{
+
+			SwICU_Start();
+			GICR &= ~(1<<5);
+			SwICU_SetCfgEdge(SwICU_EdgeFalling);
+			GICR |= (1<<5);
+			edgeDetect = SwICU_EdgeFalling;
+			
+		}
+		else if (edgeDetect == SwICU_EdgeFalling )
+		{
+
+			SwICU_Stop();
+			SwICU_Reading = TCNT0;
+		//	TCNT0 = 0;
+ 			GICR &= ~(1<<5);
+ 			SwICU_SetCfgEdge(SwICU_EdgeRisiging);
+ 			GICR |= (1<<5);
+ 			edgeDetect = SwICU_EdgeRisiging;
+ 			
+		}
+	}
+	
+	ISR(TIMER0_OVF_vect){
+		
+		SwICU_overflowCounter++;
+	}
+/* End of SW ICU application */
+
+/* testing the interrupt.h 
+
+ __attribute__((signal,__INTR_ATTRS));
+ void __vector_11 (void)
+ {
+ 
+ 	PORTC_DATA |=0XFF;
+ 	
+ }
+ */
 
 uint8_t cycleCounter = 0;
 
-
+ /* sw pwm using overflow and output compare interrupts 
  ISR( TIMER0_COMP_vect ){
 	
 		 gpioPinWrite(GPIOC, BIT0, LOW);
-		 //	 softwareDelayMs(100);
-
 }
- ISR( TIMER0_OVF_vect ){
-	 
-	 gpioPinWrite(GPIOC, BIT0, HIGH);
-	// softwareDelayMs(100);
-	// cycleCounter++;
- }
 
+ ISR( TIMER0_OVF_vect ){ 
+	 gpioPinWrite(GPIOC, BIT0, HIGH);
+ }
+*/
+ 
+ /* using the resolution way 
+  ISR( TIMER0_COMP_vect ){
+	  
+	  static uint8_t overflowCounter = 0 ;
+	 overflowCounter++;
+	 
+	 if (overflowCounter == g_duty)
+	 {
+		 gpioPinWrite(GPIOC, BIT0, LOW);
+	 }
+	 if (overflowCounter == 100 )
+	 {
+		 overflowCounter = 0 ;
+		 gpioPinWrite(GPIOC, BIT0, HIGH);
+
+	 }
+  }
+  */
 
 int main(void)
-{ 
-		PORTC_DIR = 0Xff;
-		PORTC_DATA = 0;
-
-			timer0SwPWM( 70, 200);
+{		
+		HwPWMInit();
+		//HwPWMSetDuty(30 , 200);
 		
+		while(1){
+			
+			HwPWMSetDuty(70,200);
+			softwareDelayMs(1000);
+				HwPWMSetDuty(30 , 100);
+							softwareDelayMs(1000);
 
 
-	//timer1Init(T1_NORMAL_MODE, T1_OC1_DIS, T1_PRESCALER_64, 0,0,0,0 ,T1_POLLING);
-     SREG |= (1<<7); 
-	 
-	 while(1){
-		 			timer0SwPWM( 70, 200);
+		}
+		
+		
+		
+		
+		
+		
+		/* software icu test 
+		SwICU_Init(SwICU_EdgeRisiging);
+		
+		Led_Init(LED_0);
+		Led_Init(LED_1);
+		Led_Init(LED_2);
+		Led_Init(LED_3);
+		
+		pushButtonInit(BTN_1);
+		
+	
+		gpioPortDirection(GPIOC,OUTPUT);
+		*/
+		
+		
+		
+		while(1){
+			
+		// gpioPortWrite(GPIOC, SwICU_Reading);
+		
+		gpioPortWrite(GPIOB, (SwICU_Reading << 4));
 
-		 	softwareDelayMs(3000);
-		 	timer0SwPWM( 30, 200);
-		 	softwareDelayMs(3000);
-	 }
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	/* dual inline package switch to choose the requirement to show */
-	uint8_t REQ_Select = 0;
+		}
 	
-	gpioPinDirection(GPIOA, (BIT5 | BIT6 | BIT7), INPUT);
-	gpioPortWrite(GPIOA, (BIT5 | BIT6 | BIT7));
 	
-	REQ_Select = gpioPortRead(GPIOA);
 	
-	switch(REQ_Select)
-	{
-		case 192: //110
-			REQ1_Start();
-			break;
-		case 160: //101
-			REQ2_Start();
-			break;
-		case 96:// 011
-			REQ3_Start();
-			break;
-		default: break;
-	}
-    while (1) 
-    {
-    }
+
+// 	
+// 	
+// 		/* testing sw pwm function
+// 		PORTC_DIR = 0Xff;
+// 		PORTC_DATA = 0;
+// 
+// 			timer0SwPWM( 70, 200);
+// 			*/
+// 	timer1Init(T1_NORMAL_MODE, T1_OC1_DIS, T1_PRESCALER_64, 0,0,0,0 ,T1_POLLING);
+//      SREG |= (1<<7); 
+// 	 
+// 	/* testing the SW pwm function 
+// 	 while(1){
+// 		 	timer0SwPWM( 70, 200);
+// 		 	softwareDelayMs(3000);
+// 		 	timer0SwPWM( 30, 200);
+// 		 	softwareDelayMs(3000);
+// 	 }
+// 	 
+// 	 */
+// 	 
+// 	/* dual inline package switch to choose the requirement to show */
+// 	uint8_t REQ_Select = 0;
+// 	
+// 	gpioPinDirection(GPIOA, (BIT5 | BIT6 | BIT7), INPUT);
+// 	gpioPortWrite(GPIOA, (BIT5 | BIT6 | BIT7));
+// 	
+// 	REQ_Select = gpioPortRead(GPIOA);
+// 	
+// 	switch(REQ_Select)
+// 	{
+// 		case 192: //110
+// 			REQ1_Start();
+// 			break;
+// 		case 160: //101
+// 			REQ2_Start();
+// 			break;
+// 		case 96:// 011
+// 			REQ3_Start();
+// 			break;
+// 		default: break;
+// 	}
+//     while (1) 
+//     {
+//     }
 }
 
 

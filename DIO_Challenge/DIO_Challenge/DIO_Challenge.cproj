@@ -139,10 +139,25 @@
     <Compile Include="dcMotorConfig.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ExtInterrupts.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ExtInterrupts.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="gpio.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="gpio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HwICU.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HwPWM.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HwPWM.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="interrupt.h">
@@ -188,6 +203,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="std_types.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SwICU.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SwICU.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timers.c">

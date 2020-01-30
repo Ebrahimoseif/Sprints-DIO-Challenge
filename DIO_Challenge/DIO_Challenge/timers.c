@@ -9,14 +9,13 @@
 
 
 
-#define FULL_DUTY 100
 #define FCPU 16000000UL
-
 
 
 uint8_t prescaler = T0_NO_CLOCK;
 uint8_t T1_prescaler;
 uint8_t T2_prescaler;
+uint8_t g_duty;
 
 
 /*===========================Timer0 Control===============================*/
@@ -42,6 +41,7 @@ void timer0Init(En_timer0Mode_t en_mode, En_timer0OC_t en_OC0,
 					 OCR0 = u8_outputCompare;
 				//}
 				prescaler = en_prescal;
+				
 				TIMSK |= en_interruptMask;
 					
 	}				
@@ -115,7 +115,8 @@ void timer0DelayUs(uint32_t u32_delay_in_us);
  * @param dutyCycle
  */
 void timer0SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency){
-		
+		 
+		 /*
 		uint16_t pwmTicks;
 		uint8_t onTime ;
 		pwmTicks = FCPU / (u8_frequency * 1000 );
@@ -127,9 +128,21 @@ void timer0SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency){
 		//OCR0 = onTime;
 		timer0Start();
 		
-		
+		*/ 
 		/*OCR0*/
+		/* using the resolution way 
+		uint8_t overflowTime ;
 		
+		overflowTime = FCPU / (64UL * 100 * u8_frequency );
+		
+		timer0Init(T0_COMP_MODE, T0_OC0_DIS, T0_PRESCALER_64,
+		0, overflowTime,  T0_INTERRUPT_CMP);
+		
+		 g_duty = u8_dutyCycle;
+		
+		timer0Start();
+		
+		*/
 }
 
 
