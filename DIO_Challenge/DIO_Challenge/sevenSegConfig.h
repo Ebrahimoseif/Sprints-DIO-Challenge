@@ -19,6 +19,7 @@
  */
 #define SEG_BCD_GPIO			(GPIOB)
 #define SEG_BCD_BITS			(BIT0|BIT1|BIT2|BIT3)
+#define BCD_WRITE_MASK           0x0F /* just write on the first four bits */
 
 /*
  * Define The BCD decimal point pin GPIO and BIT

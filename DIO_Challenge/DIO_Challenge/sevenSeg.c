@@ -13,7 +13,7 @@
  */
 void sevenSegInit(En_SevenSegId_t a_segment_id){
 	
-	gpioPortDirection(SEG_BCD_GPIO, OUTPUT);
+	gpioPortDirection(SEG_BCD_GPIO, OUTPUT); // bcd is common for the two segments 
 	
 	switch(a_segment_id){
 		
@@ -23,7 +23,7 @@ void sevenSegInit(En_SevenSegId_t a_segment_id){
 				
 		case SEG_1:
 				gpioPinDirection(SEG_EN2_GPIO, SEG_EN2_BIT, OUTPUT);
-		break;
+				break;
 		
 		default: break;
 	}
@@ -74,11 +74,11 @@ void sevenSegWrite(En_SevenSegId_t en_segment_id , uint8_t digit ){
 		
 		case SEG_0:
 					gpioPortWrite(SEG_BCD_GPIO, LOW);
-					gpioPortWrite(SEG_BCD_GPIO, 0x0F & digit);
+					gpioPortWrite(SEG_BCD_GPIO, BCD_WRITE_MASK & digit);
 					break;
 		case SEG_1:
 					gpioPortWrite(SEG_BCD_GPIO, LOW);
-					gpioPortWrite(SEG_BCD_GPIO, 0x0F & digit);
+					gpioPortWrite(SEG_BCD_GPIO, BCD_WRITE_MASK & digit);
 					break;
 		default: break;
 	}

@@ -1,5 +1,5 @@
 SwICU.d SwICU.o: .././SwICU.c .././SwICU.h .././interrupt.h .././timers.h \
- .././registers.h .././std_types.h .././gpio.h
+ .././registers.h .././std_types.h .././gpio.h .././HwPWM.h
 
 .././SwICU.h:
 
@@ -12,3 +12,5 @@ SwICU.d SwICU.o: .././SwICU.c .././SwICU.h .././interrupt.h .././timers.h \
 .././std_types.h:
 
 .././gpio.h:
+
+.././HwPWM.h:

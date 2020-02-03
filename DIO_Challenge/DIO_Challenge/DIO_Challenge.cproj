@@ -133,6 +133,9 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="dcMotor.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="dcMotor.h">
       <SubType>compile</SubType>
     </Compile>

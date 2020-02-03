@@ -132,7 +132,27 @@ uint8_t gpioPortRead(uint8_t u8_port){
 					 break;
 			default: break;
 		}
+		
 		return u8_value;
+		
+		/* another way  "not tested yet"
+		switch(u8_port){
+			
+			case 0:
+			return PORTA_PIN;
+			break;
+			case 1:
+			return PORTB_PIN;
+			break;
+			case 2:
+			return PORTC_PIN;
+			break;
+			case 3:
+			return PORTD_PIN;
+			break;
+			default: return 0;
+		} 
+		 end of direct return way */ 
 }
 
 
@@ -339,6 +359,7 @@ uint8_t gpioPinRead(uint8_t u8_port, uint8_t u8_pin){
 						break;
 				default: break;
 			}
+			// instead of using shift methods 
 			
 			if (u8_value > 0)
 			{

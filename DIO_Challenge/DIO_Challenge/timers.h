@@ -9,19 +9,31 @@
 
 #include "registers.h"
 #include "gpio.h"
+#include "timers.h"
+#include "HwPWM.h"
 
 /*
  * User Configuration Macros
  */
 
+#define FCPU		16000000UL
+
+
 #define T0_PWM_GPIO	GPIOD
 #define T0_PWM_BIT	BIT0
 
+#define T0_OVF_FLAG		0
+#define T0_COMP_FLAG	0
+
+
 #define T1_PWM_GPIO	GPIOD
 #define T1_PWM_BIT	BIT1
+#define T1_OVF_FLAG		2
+
 
 #define T2_PWM_GPIO GPIOD
 #define T2_PWM_BIT	BIT2
+#define T2_OVF_FLAG		6
 
 
 typedef enum En_timer0Mode_t{
@@ -55,7 +67,7 @@ typedef enum En_timer1OC_t{
 }En_timer1OC_t;
 
 typedef enum En_timer1perscaler_t{
-	T1_NO_CLOCK=0x0000,T1_PRESCALER_NO=0x0001,T1_PRESCALER_8=0x0002,T1_PRESCALER_64=0x0003,T1_PRESCALER_256=0x0004,T1_PRESCALER_1024=0x0005
+	T1_NO_CLOCK=0xF8,T1_PRESCALER_NO=0x0001,T1_PRESCALER_8=0x0002,T1_PRESCALER_64=0x0003,T1_PRESCALER_256=0x0004,T1_PRESCALER_1024=0x0005
 }En_timer1perscaler_t;
 
 typedef enum En_timer1Interrupt_t{

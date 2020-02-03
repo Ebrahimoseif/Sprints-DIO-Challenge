@@ -12,6 +12,12 @@
 #include "timers.h"
 #include "registers.h"
 
+
+#define  ICS2_MASK	  0x40
+#define  ICS2_PIN	  0x06
+#define  INT2_EN_BIT  0x05
+
+
 typedef enum EN_SwICU_Edge_t{
 	SwICU_EdgeFalling = 0,
 	SwICU_EdgeRisiging = 1

@@ -6,11 +6,11 @@
  */ 
 
 #include "timers.h"
+#include "interrupt.h"
 
 
 
-#define FCPU 16000000UL
-
+#define FULL_DUTY	100
 
 uint8_t prescaler = T0_NO_CLOCK;
 uint8_t T1_prescaler;
@@ -95,12 +95,14 @@ void timer0DelayMs(uint16_t u16_delay_in_ms){
 			//ticksNeeded =  u16_delay_in_ms  / clockCycleTime;
 			//overflows =  u16_delay_in_ms * FREQUENCY / (1000 * 255 *prescaler);
 		
+		/*  FCPU 16M  Prescaler_64 */
+		
 		timer0Start();
 		while(u16_delay_in_ms--){
 			
 			timer0Set(6); // Preload with 256 - 250 counts
-			while(!(TIFR & (1 << 0)));
-			TIFR |= (1 << 0); // clear with writing one 
+			while(!(TIFR & (1 << T0_OVF_FLAG)));
+			TIFR |= (1 << T0_OVF_FLAG); // clear with writing one 
 		}
 		timer0Stop();
 }
@@ -122,15 +124,17 @@ void timer0SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency){
 		pwmTicks = FCPU / (u8_frequency * 1000 );
 		onTime = u8_dutyCycle * pwmTicks / 100;
 		
-		timer0Init(T0_NORMAL_MODE, T0_OC0_DIS, T0_PRESCALER_8,
+		timer0Init(T0_NORMAL_MODE, T0_OC0_DIS, T0_PRESCALER_64,
 				0, onTime, T0_INTERRUPT_NORMAL | T0_INTERRUPT_CMP);
 		
 		//OCR0 = onTime;
 		timer0Start();
+		*/
 		
-		*/ 
+		 
 		/*OCR0*/
-		/* using the resolution way 
+		/* using the resolution way */
+		
 		uint8_t overflowTime ;
 		
 		overflowTime = FCPU / (64UL * 100 * u8_frequency );
@@ -142,7 +146,6 @@ void timer0SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency){
 		
 		timer0Start();
 		
-		*/
 }
 
 
@@ -207,7 +210,9 @@ void timer1Start(void){
  * Description:
  */
 void timer1Stop(void){
-	TCCR1B &= ~((1 << 2) | (1 << 1) | (1 << 0));
+	// no clock 
+	
+	TCCR1B &= T1_NO_CLOCK;
 }
 
 /**
@@ -217,15 +222,16 @@ void timer1Stop(void){
 void timer1DelayMs(uint16_t u32_delay_in_ms){
 	// Tick interval = 4 uS @ 16 MHz DIV_BY_64
 	// 1 mS = 250 ticks.
-
+	
+		/* FCPU 16M Prescaler_64 */
 	
 		timer1Start();
 		while(u32_delay_in_ms--){
 			
 			timer1Set(65286); // Preload with 65536 -250counts
 			
-			while(!(TIFR & (1 << 2)));
-			TIFR |= (1 << 2);
+			while(!(TIFR & (1 << T1_OVF_FLAG)));
+			TIFR |= (1 << T1_OVF_FLAG);
 		}
 		timer1Stop();
 	}	
@@ -262,9 +268,9 @@ void timer2Init(En_timer2Mode_t en_mode,En_timer2OC_t en_OC,
 									
 									timer2Set(u8_initialValue);
 									
-									if( en_mode == T0_COMP_MODE){
+								//	if( en_mode == T0_COMP_MODE){
 										OCR2 = u8_outputCompare;
-									}
+								//	}
 									T2_prescaler  = en_prescal;
 									TIMSK |= en_interruptMask;
 									
@@ -309,8 +315,8 @@ void timer2DelayMs(uint16_t u16_delay_in_ms){
 		
 		timer2Set(6); // Preload with 256 - 250 counts
 		
-		while(!(TIFR & (1 << 6)));
-		TIFR |= (1 << 6); // clear with writing one
+		while(!(TIFR & (1 << T2_OVF_FLAG)));
+		TIFR |= (1 << T2_OVF_FLAG); // clear with writing one
 	}
 	timer2Stop();
 }
@@ -327,21 +333,34 @@ void timer2DelayUs(uint32_t u16_delay_in_us);
 void timer2SwPWM(uint8_t u8_dutyCycle,uint8_t u8_frequency);
 
 
+ /* sw pwm using overflow and output compare interrupts 
+ 
+ ISR( TIMER0_COMP_vect ){
+	
+		 gpioPinWrite(GPIOC, BIT0, LOW);
+}
 
+ ISR( TIMER0_OVF_vect ){ 
+	 gpioPinWrite(GPIOC, BIT0, HIGH);
+ }
+*/
+ 
+ /* SW PWM using the resolution way */ 
+ 
+  ISR( TIMER0_COMP_vect ){
+	  
+	  static uint8_t overflowCounter = 0 ;
+	 overflowCounter++;
+	 
+	 if (overflowCounter == g_duty)
+	 {
+		 gpioPinWrite(GPIOC, BIT0, LOW);
+	 }
+	 if (overflowCounter == FULL_DUTY )
+	 {
+		 overflowCounter = 0 ;
+		 gpioPinWrite(GPIOC, BIT0, HIGH);
 
-// ISR(t0_){
-// 	
-// 	static uint8_t counter= 0 ; // it will be erased during build
-// 	
-// 	counter++;
-// 	
-// 	if (counter == g_duty)
-// 	{
-// 		clearbit
-// 	}
-// 	else if (counter == FULL_DUTY )
-// 	{
-// 		setbit
-// 		counter = 0 ;
-// 	}
-// }
+	 }
+  }
+  

@@ -87,7 +87,7 @@ void Led_Off(En_LedNumber_t en_led_id){
 		case LED_3:
 				gpioPinWrite(LED_3_GPIO, LED_3_BIT, LOW);
 				break;
-		default:			break;
+		default:break;
 
 	}
 }
@@ -113,7 +113,7 @@ void Led_Toggle(En_LedNumber_t en_led_id){
 		case LED_3:
 				gpioPinToggle(LED_3_GPIO, LED_3_BIT);
 				break;
-		default: 		break;
+		default:break;
 
 	}
 }
